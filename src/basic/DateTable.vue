@@ -3,17 +3,13 @@
     cellspacing="0"
     cellpadding="0"
     class="el-date-table"
-    :class="{ 'is-week-mode': selectionMode === 'week' }"
     @click="handleClick"
     @mousemove="handleMouseMove"
   >
     <tbody>
       <tr>
-        <th v-if="showWeekNumber">
-          {{ t('el.datepicker.week') }}
-        </th>
         <th v-for="(week, key) in WEEKS" :key="key">
-          {{ t('el.datepicker.weeks.' + week) }}
+          {{ week }}
         </th>
       </tr>
       <tr
@@ -44,14 +40,11 @@ import {
   getStartDateOfMonth,
   nextDate,
   isDate,
-  clearTime as _clearTime
-} from 'element-ui/src/utils/date-util';
-import Locale from 'element-ui/src/mixins/locale';
-import {
+  clearTime as _clearTime,
   arrayFind
-} from 'element-ui/src/utils/util';
+} from '../util/util';
 
-const WEEKS = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+const WEEKS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const getDateTimestamp = function(time) {
   if (typeof time === 'number' || typeof time === 'string') {
     return _clearTime(new Date(time)).getTime();
@@ -63,8 +56,6 @@ const getDateTimestamp = function(time) {
 };
 
 export default {
-  mixins: [Locale],
-
   props: {
     firstDayOfWeek: {
       default: 7,

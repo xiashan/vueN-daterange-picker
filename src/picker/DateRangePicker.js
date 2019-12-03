@@ -1,5 +1,5 @@
-import Picker from '../picker';
-import DateRangePanel from '../panel/DateRange';
+import Picker from '../picker.vue';
+import DateRangePanel from '../panel/DateRange.vue';
 
 const getPanel = function(type) {
   return DateRangePanel;

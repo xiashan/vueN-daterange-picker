@@ -128,22 +128,23 @@
 </template>
 
 <script type="text/babel">
+import Clickoutside from '../util/clickoutside';
 import {
   formatDate,
   parseDate,
-  isDate,
+  isDate,//
   modifyDate,
   modifyWithTimeString,
   prevYear,
   nextYear,
   prevMonth,
   nextMonth,
-  nextDate,
+  nextDate,//
   extractDateFormat
-} from 'element-ui/src/utils/date-util';
-import Clickoutside from 'element-ui/src/utils/clickoutside';
-import Locale from 'element-ui/src/mixins/locale';
-import DateTable from '../basic/DateTable';
+} from '../util/util';
+import DateTable from '../basic/DateTable.vue';
+
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'Septempber', 'October', 'November', 'December'];
 
 const calcDefaultValue = defaultValue => {
   if (Array.isArray(defaultValue)) {
@@ -159,8 +160,6 @@ export default {
   components: { DateTable },
 
   directives: { Clickoutside },
-
-  mixins: [Locale],
 
   data() {
     return {
@@ -214,21 +213,15 @@ export default {
 
     leftLabel() {
       return (
-        this.leftDate.getFullYear() +
-        ' ' +
-        this.t('el.datepicker.year') +
-        ' ' +
-        this.t(`el.datepicker.month${this.leftDate.getMonth() + 1}`)
+        MONTHS[this.leftDate.getMonth()] + ' ' +
+        this.leftDate.getFullYear()
       );
     },
 
     rightLabel() {
       return (
-        this.rightDate.getFullYear() +
-        ' ' +
-        this.t('el.datepicker.year') +
-        ' ' +
-        this.t(`el.datepicker.month${this.rightDate.getMonth() + 1}`)
+        MONTHS[this.rightDate.getMonth()] + ' ' +
+        this.rightDate.getFullYear()
       );
     },
 

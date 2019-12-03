@@ -52,12 +52,16 @@
 
 <script>
 import Vue from 'vue';
-import Clickoutside from 'element-ui/src/utils/clickoutside';
-import { formatDate, parseDate, isDateObject, getWeekNumber } from 'element-ui/src/utils/date-util';
-import Popper from 'element-ui/src/utils/vue-popper';
-import Emitter from 'element-ui/src/mixins/emitter';
-import ElInput from 'element-ui/packages/input';
-import merge from 'element-ui/src/utils/merge';
+import Clickoutside from './util/clickoutside';
+import Popper from 'vuen-popper';
+import {
+  formatDate,
+  parseDate,
+  isDateObject,
+  getWeekNumber,
+  merge,
+  Emitter
+} from './util/util';
 // TODO require
 import 'element-ui/lib/theme-chalk/index.css'
 
@@ -329,8 +333,6 @@ const validator = function(val) {
 };
 
 export default {
-  components: { ElInput },
-
   mixins: [Emitter, NewPopper],
 
   directives: { Clickoutside },
@@ -807,7 +809,6 @@ export default {
     },
 
     showPicker() {
-      if (this.$isServer) return;
       if (!this.picker) {
         this.mountPicker();
       }
