@@ -2,30 +2,8 @@ export const isDateObject = function(val) {
   return val instanceof Date;
 };
 
-export const toDate = function(date) {
-  return isDate(date) ? new Date(date) : null;
-};
-
-export const arrayFind = function(arr, pred) {
-  let idx = -1;
-  for (let i = 0; i !== arr.length; ++i) {
-    if (pred(arr[i])) {
-      idx = i;
-      break;
-    }
-  }
-  return idx !== -1 ? arr[idx] : undefined;
-};
-
 export const clearTime = function(date) {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate());
-};
-
-export const isDate = function(date) {
-  if (date === null || date === undefined) return false;
-  if (isNaN(new Date(date).getTime())) return false;
-  if (Array.isArray(date)) return false; // deal with `new Date([ new Date() ]) -> new Date()`
-  return true;
 };
 
 export const nextDate = function(date, amount = 1) {
@@ -42,9 +20,8 @@ export const getStartDateOfMonth = function(year, month) {
 
   if (day === 0) {
     return prevDate(result, 7);
-  } else {
-    return prevDate(result, day);
   }
+  return prevDate(result, day);
 };
 
 export const getDayCountOfMonth = function(year, month) {
@@ -55,9 +32,8 @@ export const getDayCountOfMonth = function(year, month) {
   if (month === 1) {
     if ((year % 4 === 0 && year % 100 !== 0) || year % 400 === 0) {
       return 29;
-    } else {
-      return 28;
     }
+    return 28;
   }
 
   return 31;
@@ -69,9 +45,11 @@ export const getFirstDayOfMonth = function(date) {
   return temp.getDay();
 };
 
+// 将日期类型转化成字符串, 忽略时分秒
 export const formatDate = function(date, format = 'yyyy-MM-dd') {
-  date = toDate(date);
-  if (!date) return '';
+  if (!isDateObject(date)) {
+    return '';
+  }
 
   function pad(number) {
     let r = String(number);
@@ -90,10 +68,56 @@ export const formatDate = function(date, format = 'yyyy-MM-dd') {
     .replace(/dd/g, day);
 };
 
-// eslint-disable-next-line no-unused-vars
-export const parseDate = function(string, format) {
-  // fixme
-  return new Date(string);
+function compile(format) {
+  const re = /([A-Za-z])\1*|./g;
+  let keys,
+      pattern = [format];
+
+  format = format.replace(
+    /\[[^\[\]]*]|\[.*\][^\[]*\]/g,
+    (str) => str.replace(/./g, ' ').slice(2));
+  while ((keys = re.exec(format))) {
+    pattern[pattern.length] = keys[0];
+  }
+  return pattern;
+}
+
+function exec(re, str) {
+   var result = (re.exec(str) || [''])[0];
+   return {
+     value: result | 0,
+     length: result.length
+   };
+}
+
+// 将字符串转化成中国标准时间, 忽略时分秒，默认00:00:00
+export const parseDate = function(dateString, format = 'yyyy-MM-dd') {
+  const parser = {
+    'yyyy': function (str) { return exec(/^\d{4}/, str); },
+    'MM': function (str) { return exec(/^\d\d/, str); },
+    'dd': function (str) { return exec(/^\d\d/, str); }
+  };
+  const pattern = typeof format === 'string' ? compile(format) : format;
+  let token,
+    result,
+    offset = 0,
+    dt = { y: 1970, M: 1, d: 1, H: 0, m: 0, s: 0 };
+
+  for (let i = 1, len = pattern.length; i < len; i++) {
+    token = pattern[i];
+    if (parser[token]) {
+      result = parser[token](dateString.slice(offset), pattern[0]);
+      if (result.length) {
+        offset += result.length;
+        dt[token.charAt(0)] = result.value;
+        dt._match++;
+      }
+    } else if (token === dateString.charAt(offset) || token === ' ') {
+      offset++;
+    }
+  }
+  dt.M -= dt.Y < 100 ? 22801 : 1;
+  return new Date(dt.y, dt.M, dt.d, dt.H, dt.m, dt.s);
 };
 
 export const modifyDate = function(date, y, m, d) {
@@ -105,31 +129,6 @@ export const modifyDate = function(date, y, m, d) {
     date.getMinutes(),
     date.getSeconds(),
     date.getMilliseconds()
-  );
-};
-
-export const modifyTime = function(date, h, m, s) {
-  return new Date(
-    date.getFullYear(),
-    date.getMonth(),
-    date.getDate(),
-    h,
-    m,
-    s,
-    date.getMilliseconds()
-  );
-};
-
-export const modifyWithTimeString = (date, time) => {
-  if (date == null || !time) {
-    return date;
-  }
-  time = parseDate(time, 'HH:mm:ss');
-  return modifyTime(
-    date,
-    time.getHours(),
-    time.getMinutes(),
-    time.getSeconds()
   );
 };
 
@@ -168,34 +167,6 @@ export const nextMonth = function(date) {
     : changeYearMonthAndClampDate(date, year, month + 1);
 };
 
-export const extractDateFormat = function(format) {
-  return format
-    .replace(/\W?m{1,2}|\W?ZZ/g, '')
-    .replace(/\W?h{1,2}|\W?s{1,3}|\W?a/gi, '')
-    .trim();
-};
-
-export const getWeekNumber = function(src) {
-  if (!isDate(src)) return null;
-  const date = new Date(src.getTime());
-  date.setHours(0, 0, 0, 0);
-  // Thursday in current week decides the year.
-  date.setDate(date.getDate() + 3 - ((date.getDay() + 6) % 7));
-  // January 4 is always in week 1.
-  const week1 = new Date(date.getFullYear(), 0, 4);
-  // Adjust to Thursday in week 1 and count number of weeks from date to week 1.
-  // Rounding should be fine for Daylight Saving Time. Its shift should never be more than 12 hours.
-  return (
-    1 +
-    Math.round(
-      ((date.getTime() - week1.getTime()) / 86400000 -
-        3 +
-        ((week1.getDay() + 6) % 7)) /
-        7
-    )
-  );
-};
-
 export const merge = function(target) {
   for (let i = 1, j = arguments.length; i < j; i++) {
     let source = arguments[i] || {};
@@ -213,52 +184,50 @@ export const merge = function(target) {
   return target;
 };
 
-function broadcast(componentName, eventName, params) {
-  this.$children.forEach(child => {
-    var name = child.$options.componentName;
-
-    if (name === componentName) {
-      child.$emit.apply(child, [eventName].concat(params));
-    } else {
-      broadcast.apply(child, [componentName, eventName].concat([params]));
+/*
+ * Considers:
+ *   1. Date object
+ *   2. date string
+ *   3. array of 1 or 2
+ */
+export const valueEquals = function(a, b) {
+  // considers Date object and string
+  const dateEquals = function(a, b) {
+    const aIsDate = a instanceof Date;
+    const bIsDate = b instanceof Date;
+    if (aIsDate && bIsDate) {
+      return a.getTime() === b.getTime();
     }
-  });
-}
-export const Emitter = {
-  methods: {
-    dispatch(componentName, eventName, params) {
-      var parent = this.$parent || this.$root;
-      var name = parent.$options.componentName;
-
-      while (parent && (!name || name !== componentName)) {
-        parent = parent.$parent;
-
-        if (parent) {
-          name = parent.$options.componentName;
-        }
-      }
-      if (parent) {
-        parent.$emit.apply(parent, [eventName].concat(params));
-      }
-    },
-    broadcast(componentName, eventName, params) {
-      broadcast.call(this, componentName, eventName, params);
+    if (!aIsDate && !bIsDate) {
+      return a === b;
     }
+    return false;
+  };
+
+  const aIsArray = a instanceof Array;
+  const bIsArray = b instanceof Array;
+  if (aIsArray && bIsArray) {
+    if (a.length !== b.length) {
+      return false;
+    }
+    return a.every((item, index) => dateEquals(item, b[index]));
   }
+  if (!aIsArray && !bIsArray) {
+    return dateEquals(a, b);
+  }
+  return false;
 };
 
-export const on = (function() {
-  if (document.addEventListener) {
-    return function(element, event, handler) {
-      if (element && event && handler) {
-        element.addEventListener(event, handler, false);
-      }
-    };
-  } else {
-    return function(element, event, handler) {
-      if (element && event && handler) {
-        element.attachEvent('on' + event, handler);
-      }
-    };
-  }
-})();
+function isString(val) {
+  return typeof val === 'string' || val instanceof String;
+}
+
+export const validator = function(val) {
+  // either: String, Array of String, null / undefined
+  return (
+    val === null ||
+    val === undefined ||
+    isString(val) ||
+    (Array.isArray(val) && val.length === 2 && val.every(isString))
+  );
+};

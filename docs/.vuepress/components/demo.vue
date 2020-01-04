@@ -3,6 +3,13 @@
 
         <div class="py-5">
             <div class="form-group">
+              <select v-model="value">
+                <option value="-12:00">-12:00</option>
+                <option value="+08:00">+08:00</option>
+                <option value="+12:00">+12:00</option>
+              </select>
+            </div>
+            <div class="form-group">
                 <label>Select range: </label>
                 <nox-date-range-picker
                     name="abc"
@@ -11,9 +18,10 @@
                     align="right"
                     unlink-panels
                     range-separator="To"
+                    @shortcut="changeShortcut"
                     start-placeholder="Start date"
-                    end-placeholder="End date">
-                    timezone="-7:00"
+                    end-placeholder="End date"
+                    :timezone="value">
                 </nox-date-range-picker>
             </div>
         </div>
@@ -21,7 +29,7 @@
 </template>
 
 <script>
-  import NoxDateRangePicker from '../../../src/picker/DateRangePicker'
+  import NoxDateRangePicker from '../../../src/index.js'
 
   export default {
     components: {NoxDateRangePicker},
@@ -38,13 +46,21 @@
     data () {
       return {
         value1: '',
-        value2: ['2019-11-12', '2019-11-15']
+        value2: ['2019-12-01', '2019-12-04'],
+        value: '+08:00',
+        value3: {
+          dateRange: ['2019-12-01', '2019-12-04'],
+          shortcut: '0d',
+        }
       }
     },
     mounted () {
       // this.$refs.picker.open = true
     },
     methods: {
+      changeShortcut(val) {
+        console.log('in parent', val);
+      },
       updateValues (values) {
         console.log('event: update', values)
       },

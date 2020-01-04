@@ -1,3 +1,3 @@
-import DateRangePicker from './picker/DatePicker'
+import DateRangePicker from './picker/DateRangePicker.vue'
 
 export default DateRangePicker

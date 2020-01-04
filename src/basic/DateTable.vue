@@ -22,11 +22,7 @@
           :key="key2"
           :class="getCellClasses(cell)"
         >
-          <div>
-            <span>
-              {{ cell.text }}
-            </span>
-          </div>
+          <div><span>{{ cell.text }}</span></div>
         </td>
       </tr>
     </tbody>
@@ -39,17 +35,19 @@ import {
   getDayCountOfMonth,
   getStartDateOfMonth,
   nextDate,
-  isDate,
-  clearTime as _clearTime,
-  arrayFind
+  isDateObject,
+  clearTime
 } from '../util/util';
 
-const WEEKS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+import { WEEKS } from '../util/const';
+
+// 字符串转化成日期后，有的会出现'08:00:00 GMT+0800'
+// 所以要clearTime
 const getDateTimestamp = function(time) {
   if (typeof time === 'number' || typeof time === 'string') {
-    return _clearTime(new Date(time)).getTime();
+    return clearTime(new Date(time)).getTime();
   } else if (time instanceof Date) {
-    return _clearTime(time).getTime();
+    return clearTime(time).getTime();
   } else {
     return NaN;
   }
@@ -58,49 +56,36 @@ const getDateTimestamp = function(time) {
 export default {
   props: {
     firstDayOfWeek: {
-      default: 7,
+      default: 1,
       type: Number,
       validator: val => val >= 1 && val <= 7
     },
-
     value: {},
-
     defaultValue: {
       validator(val) {
         // either: null, valid Date object, Array of valid Date objects
         return (
           val === null ||
-          isDate(val) ||
-          (Array.isArray(val) && val.every(isDate))
+          isDateObject(val) ||
+          (Array.isArray(val) && val.every(isDateObject))
         );
       }
     },
-
     date: {},
-
     selectionMode: {
-      default: 'day'
+      default: 'range'
     },
-
     showWeekNumber: {
       type: Boolean,
       default: false
     },
-
-    disabledDate: {},
-
+    disabledDate: {}, // dateRange透传，一般是function
     cellClassName: {},
-
     minDate: {},
-
     maxDate: {},
-
     rangeState: {
       default() {
-        return {
-          endDate: null,
-          selecting: false
-        };
+        return { endDate: null, selecting: false };
       }
     }
   },
@@ -133,7 +118,6 @@ export default {
       return this.date.getMonth();
     },
 
-    // 日期框的开始日期
     startDate() {
       return getStartDateOfMonth(this.year, this.month);
     },
@@ -219,10 +203,7 @@ export default {
           let cellDate = new Date(time);
           cell.disabled =
             typeof disabledDate === 'function' && disabledDate(cellDate);
-          cell.selected = arrayFind(
-            selectedDate,
-            date => date.getTime() === cellDate.getTime()
-          );
+          cell.selected = selectedDate.find(data => date.getTime() === cellDate.getTime());
           cell.customClass =
             typeof cellClassName === 'function' && cellClassName(cellDate);
           this.$set(row, j, cell);
@@ -380,6 +361,7 @@ export default {
       }
     },
 
+    // 选择日期，发送pick事件
     handleClick(event) {
       let target = event.target;
       if (target.tagName === 'SPAN') {

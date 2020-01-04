@@ -5,7 +5,7 @@ module.exports = {
     node: true
   },
   parserOptions: {
-    parser: 'babel-eslint'
+    sourceType: 'module',
   },
   extends: [
     "eslint:recommended",
@@ -23,11 +23,7 @@ module.exports = {
     "no-console": "off",
     "vue/max-attributes-per-line": "off",
     "vue/html-self-closing": ["error", {
-      "html": {
-        "void": "never",
-        "normal": "never",
-        "component": "any"
-      },
+      "html": { "void": "never", "normal": "never", "component": "any" },
       "svg": "always",
       "math": "always"
     }],
