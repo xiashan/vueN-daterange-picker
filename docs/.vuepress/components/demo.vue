@@ -37,7 +37,7 @@
 
   export default {
     components: { NoxDateRangePicker },
-    name: 'DateRangePickerDemo',
+    name: 'demo',
     filters: {
       date (value) {
         if (!value)

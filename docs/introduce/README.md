@@ -79,7 +79,9 @@ export default {
 
 ## Example
 
+<ClientOnly>
 <demo />
+</ClientOnly>
 
 ## Props
 
