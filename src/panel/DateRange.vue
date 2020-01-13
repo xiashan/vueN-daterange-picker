@@ -5,8 +5,7 @@
       class="el-picker-panel el-date-range-picker el-popper"
       :class="[
         {
-          'has-sidebar': $slots.sidebar || shortcuts,
-          'has-time': showTime
+          'has-sidebar': $slots.sidebar || shortcuts
         },
         popperClass
       ]"
@@ -164,7 +163,6 @@ export default {
         row: null,
         column: null
       },
-      showTime: false,
       shortcuts: '',
       shortcutValue: '',
       timezone: '',
@@ -172,17 +170,8 @@ export default {
       disabledDate: '',
       cellClassName: '',
       firstDayOfWeek: 1,
-      format: '',
       arrowControl: false,
-      unlinkPanels: false,
-      dateUserInput: {
-        min: null,
-        max: null
-      },
-      timeUserInput: {
-        min: null,
-        max: null
-      }
+      unlinkPanels: false
     };
   },
 
@@ -241,7 +230,7 @@ export default {
   },
 
   watch: {
-    // 通过value计算minDate,maxDate以及leftDate和rightDate
+    // 通过value(array)计算minDate,maxDate以及leftDate和rightDate
     value(newVal) {
       if (!newVal) {
         this.minDate = null;
@@ -279,150 +268,6 @@ export default {
         this.rightDate =
           val && val[1] && this.unlinkPanels ? right : nextMonth(this.leftDate);
       }
-    },
-
-    timezone(val) {
-      let today = new Date();
-      if (val) {
-        const gap = parseInt(val.split(':')[0], 10);
-        today = new Date(today.getTime() - (gap > 0 ? gap - 8 : 8 - gap) * 60 * 60 * 1000);
-      }
-      // 方便比较开始时间和结束时间
-      const t = new Date(
-        today.getFullYear(),
-        today.getMonth(),
-        today.getDate()
-      );
-      const d = today.getDay();
-      this.shortcuts.forEach(item => {
-        switch (item.value) {
-          case '0d':
-            item.start = t;
-            item.end = t;
-            break;
-          case '-1d':
-            item.start = new Date(
-              t.getFullYear(),
-              t.getMonth(),
-              t.getDate() - 1
-            );
-            item.end = new Date(
-              t.getFullYear(),
-              t.getMonth(),
-              t.getDate() - 1
-            );
-            break;
-          case '-7d':
-            item.start = new Date(
-              t.getFullYear(),
-              t.getMonth(),
-              t.getDate() - 7
-            );
-            item.end = new Date(
-              t.getFullYear(),
-              t.getMonth(),
-              t.getDate() - 1
-            );
-            break;
-          case '-1w':
-            item.start = new Date(
-              t.getFullYear(),
-              t.getMonth(),
-              t.getDate() - 6 - d
-            );
-            item.end = new Date(
-              t.getFullYear(),
-              t.getMonth(),
-              t.getDate() - d
-            );
-            break;
-          case '0m':
-            item.start = new Date(t.getFullYear(), t.getMonth(), 1);
-            item.end = t;
-            break;
-          case '-1m':
-            item.start = new Date(t.getFullYear(), t.getMonth() - 1, 1);
-            item.end = new Date(t.getFullYear(), t.getMonth(), 0);
-            break;
-        }
-      });
-      // 切换时区以后，shortcut可能会变化，因此依照最新的来更新
-      if (this.shortcutValue) {
-        const sc = this.shortcuts.find(item => item.value === this.shortcutValue);
-        this.$emit('pick', [sc.start, sc.end]);
-      }
-    },
-
-    // shortcuts赋值的时候，自动计算开始时间和结束时间
-    // TODO 跨天的时候会有一定误差
-    shortcuts(val) {
-      if (Array.isArray(val)) {
-        // 根据timezone调整today的日期, 默认获取的today是+8时区的时间
-        let today = new Date();
-        if (this.timezone) {
-          const gap = parseInt(this.timezone.split(':')[0], 10);
-          today = new Date(today.getTime() - (gap > 0 ? gap - 8 : 8 - gap) * 60 * 60 * 1000);
-        }
-        // 方便比较开始时间和结束时间
-        const t = new Date(
-          today.getFullYear(),
-          today.getMonth(),
-          today.getDate()
-        );
-        const d = today.getDay();
-        val.forEach(item => {
-          switch (item.value) {
-            case '0d':
-              item.start = t;
-              item.end = t;
-              break;
-            case '-1d':
-              item.start = new Date(
-                t.getFullYear(),
-                t.getMonth(),
-                t.getDate() - 1
-              );
-              item.end = new Date(
-                t.getFullYear(),
-                t.getMonth(),
-                t.getDate() - 1
-              );
-              break;
-            case '-7d':
-              item.start = new Date(
-                t.getFullYear(),
-                t.getMonth(),
-                t.getDate() - 7
-              );
-              item.end = new Date(
-                t.getFullYear(),
-                t.getMonth(),
-                t.getDate() - 1
-              );
-              break;
-            case '-1w':
-              item.start = new Date(
-                t.getFullYear(),
-                t.getMonth(),
-                t.getDate() - 6 - d
-              );
-              item.end = new Date(
-                t.getFullYear(),
-                t.getMonth(),
-                t.getDate() - d
-              );
-              break;
-            case '0m':
-              item.start = new Date(t.getFullYear(), t.getMonth(), 1);
-              item.end = t;
-              break;
-            case '-1m':
-              item.start = new Date(t.getFullYear(), t.getMonth() - 1, 1);
-              item.end = new Date(t.getFullYear(), t.getMonth(), 0);
-              break;
-          }
-        });
-      }
     }
   },
 
@@ -432,7 +277,6 @@ export default {
       this.maxDate = null;
       this.leftDate = calcDefaultValue(this.defaultValue)[0];
       this.rightDate = nextMonth(this.leftDate);
-      this.$emit('pick', null);
     },
 
     // 选中一个日期后，移动鼠标
@@ -456,14 +300,28 @@ export default {
         this.maxDate = val.maxDate;
         this.minDate = val.minDate;
       }, 10);
-      if (!close || this.showTime) return;
+      if (!close) return;
       this.handleConfirm();
     },
 
     // 选择左侧的区间
+    // 对应的日期放到picker中计算
     handleShortcutClick(shortcut) {
       this.shortcutValue = shortcut.value;
-      this.$emit('pick', [shortcut.start, shortcut.end]);
+      this.$emit('pick', {
+        shortcut: shortcut.value
+      });
+    },
+
+    // 选择日期区间
+    // shortcut放到picker中计算
+    handleConfirm(visible = false) {
+      if (this.isValidValue([this.minDate, this.maxDate])) {
+        // 判断选择的日期有没匹配到区间
+        this.$emit('pick', {
+          dateRange: [this.minDate, this.maxDate],
+        }, visible);
+      }
     },
 
     // leftPrev*, rightNext* need to take care of `unlinkPanels`
@@ -514,12 +372,6 @@ export default {
 
     rightPrevMonth() {
       this.rightDate = prevMonth(this.rightDate);
-    },
-
-    handleConfirm(visible = false) {
-      if (this.isValidValue([this.minDate, this.maxDate])) {
-        this.$emit('pick', [this.minDate, this.maxDate], visible);
-      }
     },
 
     isValidValue(value) {

@@ -1,15 +1,16 @@
 <template>
-    <div class="demo">
 
+    <div class="demo">
         <div class="py-5">
-            <div class="form-group">
+            <div class="form-group" style="margin-top: 16px;">
+              Timezone:
               <select v-model="value">
                 <option value="-12:00">-12:00</option>
                 <option value="+08:00">+08:00</option>
                 <option value="+12:00">+12:00</option>
               </select>
             </div>
-            <div class="form-group">
+            <div class="form-group" style="margin-top: 16px;">
                 <label>Select range: </label>
                 <nox-date-range-picker
                     name="abc"
@@ -17,11 +18,13 @@
                     type="daterange"
                     align="right"
                     unlink-panels
-                    range-separator="To"
-                    @shortcut="changeShortcut"
+                    :clearable=true
+                    range-separator="/"
+                    @change="changeDate"
                     start-placeholder="Start date"
                     end-placeholder="End date"
-                    :timezone="value">
+                    :timezone="value"
+                    :picker-options="pickerOptions">
                 </nox-date-range-picker>
             </div>
         </div>
@@ -29,10 +32,11 @@
 </template>
 
 <script>
-  import NoxDateRangePicker from '../../../src/index.js'
+  import NoxDateRangePicker from '../../../src/index.js';
+  import 'element-ui/lib/theme-chalk/index.css';
 
   export default {
-    components: {NoxDateRangePicker},
+    components: { NoxDateRangePicker },
     name: 'DateRangePickerDemo',
     filters: {
       date (value) {
@@ -45,31 +49,21 @@
     },
     data () {
       return {
-        value1: '',
-        value2: ['2019-12-01', '2019-12-04'],
         value: '+08:00',
-        value3: {
-          dateRange: ['2019-12-01', '2019-12-04'],
-          shortcut: '0d',
+        value2: {
+          dateRange: ['2020-01-01', '2020-01-09'],
+          shortcut: '0d', // shortcut优先，解决dateRange动态响应的情况
+        },
+        pickerOptions: {
+          disabledDate(time) {
+            return time.getTime() > Date.now();
+          }
         }
       }
     },
-    mounted () {
-      // this.$refs.picker.open = true
-    },
     methods: {
-      changeShortcut(val) {
-        console.log('in parent', val);
-      },
-      updateValues (values) {
-        console.log('event: update', values)
-      },
-      checkOpen (open) {
-        console.log('event: open', open)
-      },
-      dateFormat (classes, date) {
-        console.log('dateformat');
-        return classes
+      changeDate(val) {
+        console.log('change Date', val);
       }
     }
   }
@@ -78,18 +72,18 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
     h1, h2 {
-        font-weight: normal;
+      font-weight: normal;
     }
 
     a {
-        color: #42b983;
+      color: #42b983;
     }
 
     small.form-text {
-        display: initial;
+      display: initial;
     }
     small.form-text::before {
-        content: ' - ';
+      content: ' - ';
     }
 
     table {
@@ -113,5 +107,5 @@
 </style>
 
 <style>
-    @import "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css";
+    @import "https://unpkg.com/element-ui/lib/theme-chalk/index.css";
 </style>

@@ -1,3 +1,8 @@
+---
+sidebar: auto
+sidebarDepth: 2
+---
+
 # vueN-daterange-picker
 
 > VueN date range picker based on https://element.eleme.cn/#/zh-CN/component/installation (no jQuery)
@@ -22,6 +27,59 @@ import to use:
 ```JS
 import NoxDateRangePicker from 'vuen-daterange-picker'
 ```
+
+## Usage
+
+Register the component
+```JS
+import NoxDateRangePicker from 'vuen-daterange-picker'
+import 'element-ui/lib/theme-chalk/index.css'
+
+export default {
+  components: { NoxDateRangePicker },
+
+  data () {
+    return {
+      value: '+08:00',
+      value2: {
+        dateRange: ['2020-01-01', '2020-01-09'],
+        shortcut: '0d', // shortcut优先，解决dateRange动态响应的情况
+      },
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() > Date.now();
+        }
+      }
+    };
+  },
+
+  methods: {
+    changeDate(val) {
+      console.log('change Date', val);
+    }
+  }
+}
+```
+
+```vue
+    <nox-date-range-picker
+      name="date"
+      v-model="value2"
+      type="daterange"
+      align="right"
+      unlink-panels
+      :clearable=true
+      range-separator="To"
+      @change="changeDate"
+      start-placeholder="Start date"
+      end-placeholder="End date"
+      :picker-options="pickerOptions">
+    </nox-date-range-picker>
+```
+
+## Example
+
+<demo />
 
 ## Props
 

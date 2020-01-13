@@ -1,34 +1,34 @@
 const vue = require('rollup-plugin-vue');
-const buble = require('rollup-plugin-buble');
+import babel from 'rollup-plugin-babel';
 const { terser } = require('rollup-plugin-terser');
 const resolve = require('rollup-plugin-node-resolve');
-const commonjs = require('rollup-plugin-commonjs');
+// const commonjs = require('rollup-plugin-commonjs');
+
+const isProduction = process.env.NODE_ENV === 'production';
 
 export default {
-  input: 'src/picker/DateRangePicker.js',
+  input: 'src/index.js',
   output: {
-    file: 'dist/vuen-daterange-picker.js',
-    name: 'VueNDaterangePicker',
+    file: isProduction
+      ? 'dist/vuen-daterange-picker.min.js'
+      : 'dist/vuen-daterange-picker.js',
     format: 'umd',
+    name: 'VueNDaterangePicker',
     globals: {
       vue: 'Vue'
     }
   },
   external: ['vue'],
   plugins: [
-    resolve(),
-    commonjs(),
+    resolve({ extensions: ['.vue'] }),
     vue({
-      compileTemplate: true,
+      template: {},
       css: true
-    })
-    // buble(),
-    // terser({
-    //   compress: {
-    //     global_defs: {
-    //       __DEV__: process.env.NODE_ENV !== 'production'
-    //     }
-    //   }
-    // })
+    }),
+    babel({
+      runtimeHelpers: true,
+      externalHelpers: false
+    }),
+    isProduction && terser()
   ]
 };

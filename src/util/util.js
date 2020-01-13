@@ -2,6 +2,10 @@ export const isDateObject = function(val) {
   return val instanceof Date;
 };
 
+function isString(val) {
+  return typeof val === 'string' || val instanceof String;
+}
+
 export const clearTime = function(date) {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 };
@@ -217,10 +221,6 @@ export const valueEquals = function(a, b) {
   }
   return false;
 };
-
-function isString(val) {
-  return typeof val === 'string' || val instanceof String;
-}
 
 export const validator = function(val) {
   // either: String, Array of String, null / undefined
