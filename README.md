@@ -4,6 +4,8 @@
 
 Date range picker component for vue made without jQuery dependency. Heavily inspired by element-ui. 
 
+document: https://xiashan.github.io/vueN-daterange-picker/
+
 
 ## Installation
 
