@@ -204,6 +204,7 @@ export default {
       userInput: null, // input框的用户输入
       valueOnOpen: null, // picker重新选择前的值，用来决定是否emit change事件, string
       unwatchTimezone: null,
+      openValue: this.value,
     };
   },
 
@@ -238,27 +239,27 @@ export default {
 
     // 日期选择的值，array, 符合valueFormat的类型（默认yyyy-MM-dd的字符串）
     dateValue() {
-      if (!this.value) {
+      if (!this.openValue) {
         return '';
       }
       // 如果shortcut存在，那么根据shortcut计算dateRange
-      if (this.value.shortcut) {
-        return this.formatToValue(this.getDateRangeByShortcut(this.value.shortcut));
+      if (this.openValue.shortcut) {
+        return this.formatToValue(this.getDateRangeByShortcut(this.openValue.shortcut));
       } else {
-        return this.value.dateRange;
+        return this.openValue.dateRange;
       }
     },
 
     // 快捷选择的值，string
     shortcutValue() {
-      if (!this.value) {
+      if (!this.openValue) {
         return '';
       }
       // 如果dateRange存在，那么根据dateRange计算shortcut
-      if (this.value.shortcut) {
-        return this.value.shortcut;
-      } else if (Array.isArray(this.value.dateRange) && this.value.dateRange.length === 2) {
-        return this.getShortcutByRange(this.value.dateRange);
+      if (this.openValue.shortcut) {
+        return this.openValue.shortcut;
+      } else if (Array.isArray(this.openValue.dateRange) && this.openValue.dateRange.length === 2) {
+        return this.getShortcutByRange(this.openValue.dateRange);
       } else {
         return '';
       }
@@ -651,6 +652,7 @@ export default {
         )
       ) {
         this.$emit('input', val);
+        this.openValue = val;
       }
     },
 
