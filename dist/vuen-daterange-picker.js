@@ -2667,6 +2667,10 @@
         if (this.picker) {
           this.picker.defaultValue = val;
         }
+      },
+
+      value(val) {
+        this.openValue = val;
       }
 
     },
