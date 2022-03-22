@@ -239,7 +239,6 @@
     center: 'bottom',
     right: 'bottom-end'
   };
-
   const PICKER_OPTIONS = {
     shortcuts: [{
       text: 'Today',
