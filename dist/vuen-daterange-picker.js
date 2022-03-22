@@ -247,8 +247,23 @@
       text: 'Yesterday',
       value: '-1d'
     }, {
+      text: 'Last 3 Days',
+      value: '-3d'
+    }, {
       text: 'Last 7 Days',
       value: '-7d'
+    }, {
+      text: 'Last 14 Days',
+      value: '-14d'
+    }, {
+      text: 'Last 30 Days',
+      value: '-30d'
+    }, {
+      text: 'Last 90 Days',
+      value: '-90d'
+    }, {
+      text: 'Last 180 Days',
+      value: '-180d'
     }, {
       text: 'Last Week',
       value: '-1w'
@@ -801,13 +816,13 @@
     /* functional template */
     const __vue_is_functional_template__ = false;
     /* style inject */
-
+    
     /* style inject SSR */
-
+    
     /* style inject shadow dom */
+    
 
-
-
+    
     const __vue_component__ = normalizeComponent(
       { render: __vue_render__, staticRenderFns: __vue_staticRenderFns__ },
       __vue_inject_styles__,
@@ -1319,11 +1334,11 @@
     /* functional template */
     const __vue_is_functional_template__$1 = false;
     /* style inject SSR */
-
+    
     /* style inject shadow dom */
+    
 
-
-
+    
     const __vue_component__$1 = normalizeComponent(
       { render: __vue_render__$1, staticRenderFns: __vue_staticRenderFns__$1 },
       __vue_inject_styles__$1,
@@ -3149,8 +3164,28 @@
             result = [new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1), new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1)];
             break;
 
+          case '-3d':
+            result = [new Date(today.getFullYear(), today.getMonth(), today.getDate() - 3), new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1)];
+            break;
+
           case '-7d':
             result = [new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7), new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1)];
+            break;
+
+          case '-14d':
+            result = [new Date(today.getFullYear(), today.getMonth(), today.getDate() - 14), new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1)];
+            break;
+
+          case '-30d':
+            result = [new Date(today.getFullYear(), today.getMonth(), today.getDate() - 30), new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1)];
+            break;
+
+          case '-90d':
+            result = [new Date(today.getFullYear(), today.getMonth(), today.getDate() - 90), new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1)];
+            break;
+
+          case '-180d':
+            result = [new Date(today.getFullYear(), today.getMonth(), today.getDate() - 180), new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1)];
             break;
 
           case '-1w':
@@ -3270,13 +3305,13 @@
     /* functional template */
     const __vue_is_functional_template__$2 = false;
     /* style inject */
-
+    
     /* style inject SSR */
-
+    
     /* style inject shadow dom */
+    
 
-
-
+    
     const __vue_component__$2 = normalizeComponent(
       { render: __vue_render__$2, staticRenderFns: __vue_staticRenderFns__$2 },
       __vue_inject_styles__$2,
