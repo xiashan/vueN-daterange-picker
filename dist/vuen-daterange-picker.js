@@ -239,6 +239,7 @@
     center: 'bottom',
     right: 'bottom-end'
   };
+
   const PICKER_OPTIONS = {
     shortcuts: [{
       text: 'Today',
@@ -801,13 +802,13 @@
     /* functional template */
     const __vue_is_functional_template__ = false;
     /* style inject */
-    
-    /* style inject SSR */
-    
-    /* style inject shadow dom */
-    
 
-    
+    /* style inject SSR */
+
+    /* style inject shadow dom */
+
+
+
     const __vue_component__ = normalizeComponent(
       { render: __vue_render__, staticRenderFns: __vue_staticRenderFns__ },
       __vue_inject_styles__,
@@ -1319,11 +1320,11 @@
     /* functional template */
     const __vue_is_functional_template__$1 = false;
     /* style inject SSR */
-    
-    /* style inject shadow dom */
-    
 
-    
+    /* style inject shadow dom */
+
+
+
     const __vue_component__$1 = normalizeComponent(
       { render: __vue_render__$1, staticRenderFns: __vue_staticRenderFns__$1 },
       __vue_inject_styles__$1,
@@ -3270,13 +3271,13 @@
     /* functional template */
     const __vue_is_functional_template__$2 = false;
     /* style inject */
-    
-    /* style inject SSR */
-    
-    /* style inject shadow dom */
-    
 
-    
+    /* style inject SSR */
+
+    /* style inject shadow dom */
+
+
+
     const __vue_component__$2 = normalizeComponent(
       { render: __vue_render__$2, staticRenderFns: __vue_staticRenderFns__$2 },
       __vue_inject_styles__$2,
