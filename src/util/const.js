@@ -8,7 +8,12 @@ export const PICKER_OPTIONS = {
   shortcuts: [
     { text: 'Today', value: '0d' },
     { text: 'Yesterday', value: '-1d' },
+    { text: 'Last 3 Days', value: '-3d' },
     { text: 'Last 7 Days', value: '-7d' },
+    { text: 'Last 14 Days', value: '-14d' },
+    { text: 'Last 30 Days', value: '-30d' },
+    { text: 'Last 90 Days', value: '-90d' },
+    { text: 'Last 180 Days', value: '-180d' },
     { text: 'Last Week', value: '-1w' },
     { text: 'This Month', value: '0m' },
     { text: 'Last Month', value: '-1m' }

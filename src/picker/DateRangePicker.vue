@@ -707,9 +707,39 @@ export default {
           new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1)
         ];
           break;
+        case '-3d':
+        result = [
+          new Date(today.getFullYear(), today.getMonth(), today.getDate() - 3),
+          new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1)
+        ];
+          break;
         case '-7d':
           result = [
             new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7),
+            new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1)
+          ];
+          break;
+        case '-14d':
+          result = [
+            new Date(today.getFullYear(), today.getMonth(), today.getDate() - 14),
+            new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1)
+          ];
+          break;
+        case '-30d':
+          result = [
+            new Date(today.getFullYear(), today.getMonth(), today.getDate() - 30),
+            new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1)
+          ];
+          break;
+        case '-90d':
+          result = [
+            new Date(today.getFullYear(), today.getMonth(), today.getDate() - 90),
+            new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1)
+          ];
+          break;
+        case '-180d':
+          result = [
+            new Date(today.getFullYear(), today.getMonth(), today.getDate() - 180),
             new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1)
           ];
           break;
